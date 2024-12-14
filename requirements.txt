@@ -1,0 +1,3 @@
+qbittorrentapi == 2024.11.70
+pycliarr.api == 1.0.27
+requests == 2.32.3
