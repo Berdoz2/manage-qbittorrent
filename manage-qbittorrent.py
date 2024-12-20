@@ -52,8 +52,8 @@ except qbittorrentapi.LoginFailed as e:
 for torrent in qbt_client.torrents_info():
     #+7 days last activity + don't have tag "donotdelete" + is not downloading or meta downloading right now.
     #torrent to delete that is inactive
-    if (datetime.datetime.fromtimestamp(torrent.last_activity)) > datetime.datetime.now() - datetime.timedelta(days=7) \
-    and torrent.tags != "donotdelete" and (torrent.state == "seeding" or torrent.state == "queued"):
+    if (datetime.datetime.fromtimestamp(torrent.last_activity) < datetime.datetime.today() - datetime.timedelta(days=7)) \
+    and (torrent.tags != "donotdelete" and (torrent.state == "stalledUP" or torrent.state == "queuedUP")):
         logger.info(f"inactif | {torrent.name} ({torrent.state})")
         #delete this torrent
         qbt_client.torrents_delete(True, torrent.hash)
