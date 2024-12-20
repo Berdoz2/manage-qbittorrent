@@ -52,14 +52,14 @@ except qbittorrentapi.LoginFailed as e:
 for torrent in qbt_client.torrents_info():
     #+7 days last activity + don't have tag "donotdelete" + is not downloading or meta downloading right now.
     #torrent to delete that is inactive
-    if (datetime.datetime.now() - datetime.datetime.fromtimestamp(torrent.last_activity)) > datetime.timedelta(days=7) \
-    and torrent.tags != "donotdelete" and (torrent.state == "seeding" and torrent.state == "queued"):
+    if (datetime.datetime.fromtimestamp(torrent.last_activity)) > datetime.datetime.now() - datetime.timedelta(days=7) \
+    and torrent.tags != "donotdelete" and (torrent.state == "seeding" or torrent.state == "queued"):
         logger.info(f"inactif | {torrent.name} ({torrent.state})")
         #delete this torrent
         qbt_client.torrents_delete(True, torrent.hash)
 
     #delete torrent that is not downloading fast enought or lock in Dl metadata
-    elif (datetime.datetime.now() - datetime.datetime.fromtimestamp(torrent.added_on)) > datetime.timedelta(days=3) \
+    elif (datetime.datetime.fromtimestamp(torrent.added_on)) > datetime.datetime.now() - datetime.timedelta(days=3) \
     and torrent.tags != "donotdelete" and (torrent.state == "downloading" or torrent.state == "metaDL" or torrent.state == "stalled"):
         logger.info(f"download too slow | {torrent.name} ({torrent.state})")
         #delete this torrent
